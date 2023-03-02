@@ -1,0 +1,3 @@
+[
+  { "principal": "everyone", "granted": ["jcr:read"] }
+]

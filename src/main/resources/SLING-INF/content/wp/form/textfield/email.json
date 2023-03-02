@@ -1,0 +1,9 @@
+{
+  "sling:configs": {
+    "input": {
+      "type": "email",
+      "placeholder": "Enter email (e.g. johnd@example.com)",
+      "title": "An email address"
+    }
+  }
+}

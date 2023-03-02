@@ -1,0 +1,8 @@
+{
+  "sling:configs": {
+    "input": {
+      "type": "time",
+      "title": "A localized time value"
+    }
+  }
+}

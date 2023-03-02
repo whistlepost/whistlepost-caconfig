@@ -1,0 +1,9 @@
+{
+  "sling:configs": {
+    "input": {
+      "type": "url",
+      "placeholder": "Enter URL (e.g. https://www.example.com)",
+      "title": "An Internet address"
+    }
+  }
+}
