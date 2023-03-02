@@ -1,0 +1,106 @@
+plugins {
+    id 'pl.allegro.tech.build.axion-release' version '1.13.3'
+    id 'biz.aQute.bnd.builder' version "$bndVersion" apply false
+}
+
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+scmVersion {
+    tag {
+        prefix = 'whistlepost-caconfig-'
+    }
+    versionCreator 'versionWithBranch'
+    branchVersionCreator = ['main': 'simple']
+    nextVersion {
+        suffix = 'pre'
+        separator = '-'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // felix java12 support..
+//    bundles 'org.apache.felix:org.apache.felix.webconsole.plugins.memoryusage:1.0.10'
+
+    // sling caconfig
+    implementation "org.apache.sling:org.apache.sling.caconfig.impl:$slingCaconfigImplVersion"
+
+    // sling mocks
+    testImplementation 'org.apache.sling:org.apache.sling.testing.sling-mock-oak:3.1.2-1.40.0',
+            "org.apache.sling:org.apache.sling.testing.sling-mock.junit5:$slingMocksVersion",
+            "org.apache.sling:org.apache.sling.models.impl:$slingModelsImplVersion",
+            "org.osgi:org.osgi.service.http.whiteboard:1.1.1",
+            "org.osgi:org.osgi.annotation.versioning:1.1.2",
+            "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+
+    testImplementation "org.slf4j:slf4j-log4j12:$slf4jVersion",
+            "org.apache.logging.log4j:log4j:$log4jVersion"
+
+    // caconfig
+    testImplementation 'org.apache.sling:org.apache.sling.testing.caconfig-mock-plugin:1.4.0'
+
+}
+
+sourceCompatibility = 8
+targetCompatibility = 8
+
+group = 'org.whistlepost'
+version = scmVersion.version
+
+ext {
+    isReleaseVersion = !version.endsWith("SNAPSHOT")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        "$name"(MavenPublication) {
+            from components.java
+            pom.withXml {
+                asNode().appendNode('name', name)
+                asNode().appendNode('description', description)
+                asNode().appendNode('url', 'https://www.whistlepost.org')
+
+                def scmNode = asNode().appendNode('scm')
+                scmNode.appendNode('url', 'https://github.com/whistlepost/whistlepost-caconfig')
+                scmNode.appendNode('connection', 'scm:git@github.com:whistlepost/whistlepost-caconfig.git')
+                scmNode.appendNode('developerConnection', 'scm:git@github.com:whistlepost/whistlepost-caconfig.git')
+
+                def licenseNode = asNode().appendNode('licenses').appendNode('license')
+                licenseNode.appendNode('name', 'Apache License')
+                licenseNode.appendNode('url', 'https://raw.githubusercontent.com/whistlepost/whistlepost-caconfig/master/LICENSE')
+                licenseNode.appendNode('distribution', 'repo')
+
+                def developerNode = asNode().appendNode('developers').appendNode('developer')
+                developerNode.appendNode('id', 'fortuna')
+                developerNode.appendNode('name', 'Ben Fortuna')
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = version.endsWith('SNAPSHOT') ? "https://oss.sonatype.org/content/repositories/snapshots/" :
+                    "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+signing {
+    required { isReleaseVersion }
+    sign publishing.publications[name]
+}
