@@ -1,6 +1,16 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.apache.sling:org.apache.sling.bnd.models:1.0.0",
+                'org.apache.sling:org.apache.sling.caconfig.bnd-plugin:1.0.2'
+    }
+}
+
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.13.3'
-    id 'biz.aQute.bnd.builder' version "$bndVersion" apply false
+    id 'biz.aQute.bnd.builder' version "$bndVersion"
 }
 
 apply plugin: 'java-library'
