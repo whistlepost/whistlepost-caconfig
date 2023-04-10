@@ -42,7 +42,7 @@ dependencies {
     implementation "org.apache.sling:org.apache.sling.caconfig.impl:$slingCaconfigImplVersion"
 
     // sling mocks
-    testImplementation 'org.apache.sling:org.apache.sling.testing.sling-mock-oak:3.1.2-1.40.0',
+    testImplementation 'org.apache.sling:org.apache.sling.testing.sling-mock-oak:3.1.8-1.44.0',
             "org.apache.sling:org.apache.sling.testing.sling-mock.junit5:$slingMocksVersion",
             "org.apache.sling:org.apache.sling.models.impl:$slingModelsImplVersion",
             "org.osgi:org.osgi.service.http.whiteboard:1.1.1",
@@ -61,6 +61,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 
 group = 'org.whistlepost'
+description = 'Whistlepost context-aware configuration for Apache Sling'
 version = scmVersion.version
 
 ext {
@@ -69,6 +70,11 @@ ext {
 
 test {
     useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
